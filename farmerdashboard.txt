@@ -1,0 +1,429 @@
+html_content = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Farmer Dashboard - Govipola.lk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'govipola-green': '#16A34A',
+                        'govipola-green-dark': '#15803D',
+                        'govipola-green-light': '#22C55E',
+                        'govipola-green-pale': '#DCFCE7',
+                        'govipola-navy': '#0F172A',
+                        'govipola-cream': '#F8FAFC',
+                        'govipola-gray': '#64748B',
+                        'govipola-border': '#E2E8F0',
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'Noto Sans Sinhala', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .touch-target { min-height: 48px; }
+        .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05); }
+        .harvest-row { transition: background-color 0.2s; }
+        .harvest-row:active { background-color: #F0FDF4; }
+        .modal { display: none; }
+        .modal.active { display: flex; }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #16A34A; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-govipola-cream text-govipola-navy font-poppins antialiased min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-govipola-border sticky top-0 z-40">
+        <div class="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 bg-govipola-green rounded-lg flex items-center justify-center text-white">
+                    <i class="fas fa-leaf text-lg"></i>
+                </div>
+                <span class="font-bold text-lg">Govipola<span class="text-govipola-green">.lk</span></span>
+            </div>
+            <button class="w-10 h-10 flex items-center justify-center text-govipola-gray hover:text-govipola-green transition">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-lg mx-auto px-4 py-6 pb-24">
+        
+        <!-- Welcome Text -->
+        <div class="mb-6">
+            <p class="text-sm text-govipola-gray">Welcome,</p>
+            <h1 class="text-2xl font-bold text-govipola-navy">Bandara <span class="text-base font-normal text-govipola-gray">(Nuwara Eliya)</span></h1>
+        </div>
+
+        <!-- Sales Summary Cards -->
+        <div class="grid grid-cols-3 gap-3 mb-8">
+            <div class="bg-white rounded-2xl p-4 card-shadow border border-govipola-border text-center">
+                <div class="w-10 h-10 bg-govipola-green-pale rounded-xl flex items-center justify-center text-govipola-green mx-auto mb-2">
+                    <i class="fas fa-money-bill-wave text-lg"></i>
+                </div>
+                <p class="text-xs text-govipola-gray mb-1">Total Sales</p>
+                <p class="text-lg font-bold text-govipola-navy">Rs. 45,200</p>
+                <p class="text-xs text-govipola-green font-medium">This Month</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 card-shadow border border-govipola-border text-center">
+                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mx-auto mb-2">
+                    <i class="fas fa-shopping-basket text-lg"></i>
+                </div>
+                <p class="text-xs text-govipola-gray mb-1">Recent</p>
+                <p class="text-lg font-bold text-govipola-navy">12</p>
+                <p class="text-xs text-blue-600 font-medium">Orders</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 card-shadow border border-govipola-border text-center">
+                <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center text-yellow-600 mx-auto mb-2">
+                    <i class="fas fa-wallet text-lg"></i>
+                </div>
+                <p class="text-xs text-govipola-gray mb-1">Payment</p>
+                <p class="text-lg font-bold text-govipola-navy">Rs. 12,500</p>
+                <p class="text-xs text-yellow-600 font-medium">Pending</p>
+            </div>
+        </div>
+
+        <!-- Main Action Button -->
+        <button onclick="openModal()" class="w-full bg-govipola-green text-white py-5 rounded-2xl font-bold text-lg shadow-lg shadow-green-200 hover:bg-govipola-green-dark active:scale-95 transition-all duration-200 flex items-center justify-center space-x-3 mb-8 touch-target">
+            <i class="fas fa-plus text-xl"></i>
+            <span>Add New Harvest</span>
+        </button>
+
+        <!-- Harvest List Section -->
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-govipola-navy">Your Harvests</h2>
+            <span class="text-sm text-govipola-gray bg-white px-3 py-1 rounded-full border border-govipola-border">4 items</span>
+        </div>
+
+        <!-- Harvest Cards (Mobile-optimized) -->
+        <div class="space-y-3" id="harvest-list">
+            <!-- Card 1 -->
+            <div class="harvest-row bg-white rounded-2xl p-5 card-shadow border border-govipola-border slide-up">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 text-xl">
+                            <i class="fas fa-carrot"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-govipola-navy text-lg">Carrot</h3>
+                            <span class="text-xs text-govipola-gray bg-govipola-cream px-2 py-0.5 rounded">Nuwara Eliya</span>
+                        </div>
+                    </div>
+                    <span class="bg-green-100 text-govipola-green-dark text-xs font-bold px-3 py-1.5 rounded-full">ACTIVE</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4 pt-3 border-t border-govipola-border">
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Quantity</p>
+                        <p class="font-semibold text-govipola-navy">150 kg</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Harvest Date</p>
+                        <p class="font-semibold text-govipola-navy">Jun 15</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Price/kg</p>
+                        <p class="font-semibold text-govipola-navy">Rs. 120</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="harvest-row bg-white rounded-2xl p-5 card-shadow border border-govipola-border slide-up" style="animation-delay: 0.1s;">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-600 text-xl">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-govipola-navy text-lg">Tomatoes</h3>
+                            <span class="text-xs text-govipola-gray bg-govipola-cream px-2 py-0.5 rounded">Nuwara Eliya</span>
+                        </div>
+                    </div>
+                    <span class="bg-green-100 text-govipola-green-dark text-xs font-bold px-3 py-1.5 rounded-full">ACTIVE</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4 pt-3 border-t border-govipola-border">
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Quantity</p>
+                        <p class="font-semibold text-govipola-navy">80 kg</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Harvest Date</p>
+                        <p class="font-semibold text-govipola-navy">Jun 14</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Price/kg</p>
+                        <p class="font-semibold text-govipola-navy">Rs. 95</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="harvest-row bg-white rounded-2xl p-5 card-shadow border border-govipola-border slide-up" style="animation-delay: 0.2s;">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 text-xl">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-govipola-navy text-lg">Leeks</h3>
+                            <span class="text-xs text-govipola-gray bg-govipola-cream px-2 py-0.5 rounded">Nuwara Eliya</span>
+                        </div>
+                    </div>
+                    <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1.5 rounded-full">PENDING</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4 pt-3 border-t border-govipola-border">
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Quantity</p>
+                        <p class="font-semibold text-govipola-navy">200 kg</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Harvest Date</p>
+                        <p class="font-semibold text-govipola-navy">Jun 18</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Price/kg</p>
+                        <p class="font-semibold text-govipola-navy">Rs. 140</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="harvest-row bg-white rounded-2xl p-5 card-shadow border border-govipola-border slide-up" style="animation-delay: 0.3s;">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-xl">
+                            <i class="fas fa-carrot"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-govipola-navy text-lg">Beetroot</h3>
+                            <span class="text-xs text-govipola-gray bg-govipola-cream px-2 py-0.5 rounded">Nuwara Eliya</span>
+                        </div>
+                    </div>
+                    <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-full">SOLD</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4 pt-3 border-t border-govipola-border">
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Quantity</p>
+                        <p class="font-semibold text-govipola-navy">100 kg</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Harvest Date</p>
+                        <p class="font-semibold text-govipola-navy">Jun 10</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-govipola-gray mb-1">Price/kg</p>
+                        <p class="font-semibold text-govipola-navy">Rs. 110</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default, shown when no items) -->
+        <div id="empty-state" class="hidden text-center py-16">
+            <div class="w-20 h-20 bg-govipola-green-pale rounded-full flex items-center justify-center text-govipola-green mx-auto mb-4">
+                <i class="fas fa-basket-shopping text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-govipola-navy mb-2">No Harvests Yet</h3>
+            <p class="text-govipola-gray text-sm mb-6">Add your first harvest to start selling</p>
+            <button onclick="openModal()" class="bg-govipola-green text-white px-8 py-3 rounded-full font-semibold hover:bg-govipola-green-dark transition">
+                Add Harvest
+            </button>
+        </div>
+    </main>
+
+    <!-- Bottom Tab Bar (Mobile Navigation) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-govipola-border z-40 safe-area-pb">
+        <div class="max-w-lg mx-auto flex justify-around items-center h-16">
+            <a href="#" class="flex flex-col items-center justify-center w-20 h-full text-govipola-green">
+                <i class="fas fa-home text-xl mb-0.5"></i>
+                <span class="text-xs font-medium">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-20 h-full text-govipola-gray hover:text-govipola-green transition">
+                <i class="fas fa-clipboard-list text-xl mb-0.5"></i>
+                <span class="text-xs font-medium">Orders</span>
+            </a>
+            <div class="w-16"></div> <!-- Spacer for FAB -->
+            <a href="#" class="flex flex-col items-center justify-center w-20 h-full text-govipola-gray hover:text-govipola-green transition">
+                <i class="fas fa-chart-pie text-xl mb-0.5"></i>
+                <span class="text-xs font-medium">Earnings</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-20 h-full text-govipola-gray hover:text-govipola-green transition">
+                <i class="fas fa-user text-xl mb-0.5"></i>
+                <span class="text-xs font-medium">Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Floating Action Button (Center of tab bar) -->
+    <button onclick="openModal()" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-govipola-green text-white rounded-full shadow-xl shadow-green-300 flex items-center justify-center text-2xl hover:bg-govipola-green-dark active:scale-90 transition z-50">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Add Harvest Modal -->
+    <div id="add-modal" class="modal fixed inset-0 z-50 items-end justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 slide-up max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-govipola-navy">Add New Harvest</h2>
+                <button onclick="closeModal()" class="w-10 h-10 bg-govipola-cream rounded-full flex items-center justify-center text-govipola-gray hover:text-govipola-navy transition">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form id="harvest-form" class="space-y-5">
+                <!-- Produce Type -->
+                <div>
+                    <label class="block text-sm font-semibold text-govipola-navy mb-2">Produce Type</label>
+                    <div class="relative">
+                        <select class="w-full bg-govipola-cream border-2 border-govipola-border rounded-xl px-4 py-4 text-lg font-medium text-govipola-navy focus:border-govipola-green focus:outline-none appearance-none touch-target">
+                            <option value="">Select produce...</option>
+                            <option value="carrot">Carrot (කැරට්)</option>
+                            <option value="tomato">Tomatoes (තක්කාලි)</option>
+                            <option value="leeks">Leeks (ලීක්ස්)</option>
+                            <option value="beetroot">Beetroot (බීට්රූට්)</option>
+                            <option value="cabbage">Cabbage (ගෝවා)</option>
+                            <option value="potato">Potato (අල)</option>
+                            <option value="beans">Beans (බෝංචි)</option>
+                            <option value="brinjal">Brinjal (වම්බටු)</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-govipola-gray pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                    <label class="block text-sm font-semibold text-govipola-navy mb-2">Quantity (kg)</label>
+                    <div class="relative">
+                        <input type="number" placeholder="e.g., 150" class="w-full bg-govipola-cream border-2 border-govipola-border rounded-xl px-4 py-4 text-lg font-medium text-govipola-navy focus:border-govipola-green focus:outline-none touch-target">
+                        <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-govipola-gray font-medium">kg</span>
+                    </div>
+                </div>
+
+                <!-- Harvest Date -->
+                <div>
+                    <label class="block text-sm font-semibold text-govipola-navy mb-2">Harvest Date</label>
+                    <input type="date" class="w-full bg-govipola-cream border-2 border-govipola-border rounded-xl px-4 py-4 text-lg font-medium text-govipola-navy focus:border-govipola-green focus:outline-none touch-target">
+                </div>
+
+                <!-- Expected Price -->
+                <div>
+                    <label class="block text-sm font-semibold text-govipola-navy mb-2">Expected Price per kg (Rs.)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-govipola-gray font-medium">Rs.</span>
+                        <input type="number" placeholder="e.g., 120" class="w-full bg-govipola-cream border-2 border-govipola-border rounded-xl pl-12 pr-4 py-4 text-lg font-medium text-govipola-navy focus:border-govipola-green focus:outline-none touch-target">
+                    </div>
+                </div>
+
+                <!-- Quality Grade -->
+                <div>
+                    <label class="block text-sm font-semibold text-govipola-navy mb-2">Quality Grade</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="grade" value="A" class="peer hidden" checked>
+                            <div class="border-2 border-govipola-border rounded-xl py-3 text-center peer-checked:border-govipola-green peer-checked:bg-green-50 peer-checked:text-govipola-green transition">
+                                <span class="font-bold text-lg">A</span>
+                                <p class="text-xs text-govipola-gray mt-1">Premium</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="grade" value="B" class="peer hidden">
+                            <div class="border-2 border-govipola-border rounded-xl py-3 text-center peer-checked:border-govipola-green peer-checked:bg-green-50 peer-checked:text-govipola-green transition">
+                                <span class="font-bold text-lg">B</span>
+                                <p class="text-xs text-govipola-gray mt-1">Standard</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="grade" value="C" class="peer hidden">
+                            <div class="border-2 border-govipola-border rounded-xl py-3 text-center peer-checked:border-govipola-green peer-checked:bg-green-50 peer-checked:text-govipola-green transition">
+                                <span class="font-bold text-lg">C</span>
+                                <p class="text-xs text-govipola-gray mt-1">Economy</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-govipola-green text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-green-200 hover:bg-govipola-green-dark active:scale-95 transition-all duration-200 mt-6 touch-target">
+                    <i class="fas fa-check mr-2"></i>Save Harvest
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-govipola-navy text-white px-6 py-3 rounded-full shadow-xl z-50 hidden items-center space-x-3 fade-in">
+        <i class="fas fa-check-circle text-govipola-green text-xl"></i>
+        <span class="font-medium">Harvest added successfully!</span>
+    </div>
+
+    <script>
+        // Modal Functions
+        function openModal() {
+            document.getElementById('add-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('add-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('add-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Form Submit
+        document.getElementById('harvest-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeModal();
+            
+            // Show toast
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 3000);
+            
+            this.reset();
+        });
+
+        // Touch feedback for cards
+        document.querySelectorAll('.harvest-row').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>'''
+
+with open('/mnt/agents/output/govipola_farmer_dashboard.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("Farmer Dashboard saved successfully!")
+print(f"File size: {len(html_content):,} characters")
